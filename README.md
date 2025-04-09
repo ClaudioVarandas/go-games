@@ -4,6 +4,42 @@ This project is a web application for managing game lists and tracking game stat
 
 ## Features
 
+- Track your game collection and statuses (Playing, Beaten, Completed, etc.)
+- Organize games into custom lists
+- **Backlog**: a dedicated list for games you plan to play
+- **Wishlist**: a dedicated list for games you want to buy
+- Admin panel for managing users, games, and lists
+
+## Game Lists
+
+Each user can have:
+
+- **Multiple `regular` lists** (custom named lists)
+- **One `backlog` list** (automatically created if missing)
+- **One `wishlist` list** (automatically created if missing)
+
+### List Types
+
+| Type      | Description                          | Unique per user |
+|-----------|--------------------------------------|-----------------|
+| regular   | User-created custom lists            | No              |
+| backlog   | Games the user plans to play         | Yes             |
+| wishlist  | Games the user wants to buy          | Yes             |
+
+## Backlog
+
+- The backlog is a **special list** with `type = 'backlog'`.
+- It is created automatically when the user visits **My Games**.
+- Users can add/remove games to/from their backlog.
+- Displayed under the **Backlog** tab on `/my-games`.
+
+## Wishlist
+
+- The wishlist is a **special list** with `type = 'wishlist'`.
+- It is created automatically when the user visits **My Games**.
+- Users can add/remove games to/from their wishlist.
+- Displayed under the **Wishlist** tab on `/my-games`.
+- Useful for tracking games you want to buy or try in the future.
 
 ## Admin Panel
 

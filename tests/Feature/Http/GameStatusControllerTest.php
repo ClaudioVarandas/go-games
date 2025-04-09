@@ -18,6 +18,30 @@ test('unauthenticated users cannot set game status', function () {
     $response->assertUnauthorized();
 });
 
+test('backlog list is created automatically and only once', function () {
+    $user = \App\Models\User::factory()->create();
+
+    $this->actingAs($user)
+        ->get('/my-games')
+        ->assertOk();
+
+    $this->assertDatabaseHas('game_lists', [
+        'user_id' => $user->id,
+        'type' => 'backlog',
+        'name' => 'Backlog',
+    ]);
+
+    // Call again to ensure no duplicate backlog list
+    $this->actingAs($user)
+        ->get('/my-games')
+        ->assertOk();
+
+    $this->assertEquals(
+        1,
+        \App\Models\GameList::where('user_id', $user->id)->where('type', 'backlog')->count()
+    );
+});
+
 test('authenticated users can set game status', function () {
     $user = User::factory()->create();
     $game = Game::factory()->create();

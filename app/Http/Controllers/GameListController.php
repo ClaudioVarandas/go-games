@@ -26,6 +26,7 @@ class GameListController extends Controller
     public function index()
     {
         $gameLists = auth()->user()->gameLists()
+            ->where('type', 'regular')
             ->withCount('games')
             ->orderBy('created_at', 'desc')
             ->get();

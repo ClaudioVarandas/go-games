@@ -57,13 +57,15 @@ const GAME_STATUSES = {
 
 interface MyGamesProps {
     games: Game[];
+    backlogGames: Game[];
+    wishlistGames: Game[];
     gameLists: GameList[];
     filters?: {
         status?: string | null;
     };
 }
 
-export default function MyGames({ games, gameLists, filters = {} }: MyGamesProps) {
+export default function MyGames({ games, backlogGames, wishlistGames, gameLists, filters = {} }: MyGamesProps) {
     const [activeTab, setActiveTab] = useState<TabType>('games');
     const [statusFilter, setStatusFilter] = useState<string>(filters.status || 'all');
     
@@ -101,11 +103,11 @@ export default function MyGames({ games, gameLists, filters = {} }: MyGamesProps
                             <ToggleGroupItem value="games" className="px-6 py-3 text-lg">
                                 Games ({games.length})
                             </ToggleGroupItem>
-                            <ToggleGroupItem value="backlog" className="px-6 py-3 text-lg" disabled>
-                                Backlog (Coming Soon)
+                            <ToggleGroupItem value="backlog" className="px-6 py-3 text-lg">
+                                Backlog ({backlogGames.length})
                             </ToggleGroupItem>
-                            <ToggleGroupItem value="wishlist" className="px-6 py-3 text-lg" disabled>
-                                Wishlist (Coming Soon)
+                            <ToggleGroupItem value="wishlist" className="px-6 py-3 text-lg">
+                                Wishlist ({wishlistGames.length})
                             </ToggleGroupItem>
                         </ToggleGroup>
                     </div>
@@ -151,15 +153,37 @@ export default function MyGames({ games, gameLists, filters = {} }: MyGamesProps
                     )}
                     
                     {activeTab === 'backlog' && (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 text-lg">Backlog feature coming soon!</p>
-                        </div>
+                        backlogGames.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {backlogGames.map((game) => (
+                                    <div key={game.id} className="transform transition-transform duration-300 hover:scale-105">
+                                        <GameCard game={game} gameLists={gameLists} />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12">
+                                <p className="text-gray-500 text-lg mb-4">Your backlog is empty.</p>
+                                <p className="text-gray-500">Add games to your backlog to track what you plan to play.</p>
+                            </div>
+                        )
                     )}
                     
                     {activeTab === 'wishlist' && (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 text-lg">Wishlist feature coming soon!</p>
-                        </div>
+                        wishlistGames && wishlistGames.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {wishlistGames.map((game) => (
+                                    <div key={game.id} className="transform transition-transform duration-300 hover:scale-105">
+                                        <GameCard game={game} gameLists={gameLists} />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12">
+                                <p className="text-gray-500 text-lg mb-4">Your wishlist is empty.</p>
+                                <p className="text-gray-500">Add games to your wishlist to keep track of games you want.</p>
+                            </div>
+                        )
                     )}
                 </div>
             </div>

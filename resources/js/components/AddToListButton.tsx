@@ -42,6 +42,7 @@ export function AddToListButton({
   const [viewMode, setViewMode] = useState<'select' | 'create'>('select');
   const [newListName, setNewListName] = useState('');
   const [newListDescription, setNewListDescription] = useState('');
+  const [newListType, setNewListType] = useState<'regular' | 'backlog' | 'wishlist'>('regular');
   const [isPublic, setIsPublic] = useState(true);
   const [notes, setNotes] = useState('');
   const [selectedListId, setSelectedListId] = useState<number | null>(null);
@@ -54,6 +55,7 @@ export function AddToListButton({
     router.post('/game-lists', {
       name: newListName,
       description: newListDescription,
+      type: newListType,
       is_public: isPublic,
     }, {
       onSuccess: (response: any) => {
@@ -91,24 +93,37 @@ export function AddToListButton({
 
   const addGameToList = (listId: number) => {
     setIsAddingToList(true);
-    
-    router.post(`/game-lists/${listId}/games`, {
-      game_id: gameId,
-      notes: notes,
-    }, {
-      onSuccess: () => {
+
+    fetch(`/game-lists/${listId}/games`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '',
+      },
+      body: JSON.stringify({
+        game_id: gameId,
+        notes: notes,
+      }),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw errorData;
+        }
+        return response.json();
+      })
+      .then(() => {
         setIsAddingToList(false);
         setNotes('');
         setSelectedListId(null);
         setIsDialogOpen(false);
-      },
-      onError: (errors: any) => {
-        console.error('Error adding game to list:', errors);
-        // Show an error message to the user
-        alert(`Error: ${Object.values(errors).flat().join(', ')}`);
+      })
+      .catch((error) => {
+        console.error('Error adding game to list:', error);
+        alert(`Error: ${Object.values(error).flat().join(', ')}`);
         setIsAddingToList(false);
-      }
-    });
+      });
   };
 
   const handleAddToSelectedList = () => {
@@ -227,6 +242,20 @@ export function AddToListButton({
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Why you're adding this game to the list..."
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="list_type">List Type</Label>
+              <select
+                id="list_type"
+                value={newListType}
+                onChange={(e) => setNewListType(e.target.value as 'regular' | 'backlog' | 'wishlist')}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+              >
+                <option value="regular">Regular</option>
+                <option value="backlog">Backlog</option>
+                <option value="wishlist">Wishlist</option>
+              </select>
             </div>
             
             <div className="flex items-center space-x-2">

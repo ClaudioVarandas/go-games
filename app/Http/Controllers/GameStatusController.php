@@ -45,13 +45,47 @@ class GameStatusController extends Controller
 
         // Get user's game lists for the AddToList functionality
         $gameLists = $user->gameLists()
-            ->select('id', 'name')
+            ->select('id', 'name', 'type')
             ->orderBy('name')
             ->get();
+
+        // Fetch or create the user's backlog list
+        $backlogList = $user->gameLists()
+            ->where('type', 'backlog')
+            ->first();
+
+        if (! $backlogList) {
+            $backlogList = $user->gameLists()->make();
+            $backlogList->name = 'Backlog';
+            $backlogList->type = 'backlog';
+            $backlogList->is_public = false;
+            $user->gameLists()->save($backlogList);
+        }
+
+        // Fetch games in backlog
+        $backlogGames = $backlogList->games()->get();
+
+        // Fetch or create the user's wishlist list
+        $wishlistList = $user->gameLists()
+            ->where('type', 'wishlist')
+            ->first();
+
+        if (! $wishlistList) {
+            $wishlistList = $user->gameLists()->make();
+            $wishlistList->name = 'Wishlist';
+            $wishlistList->type = 'wishlist';
+            $wishlistList->is_public = false;
+            $user->gameLists()->save($wishlistList);
+        }
+
+        // Fetch games in wishlist
+        $wishlistGames = $wishlistList->games()->get();
 
         return Inertia::render('MyGames/Index', [
             'games' => $games,
             'gameLists' => $gameLists,
+            'backlogGames' => $backlogGames,
+            'wishlistGames' => $wishlistGames,
             'filters' => [
                 'status' => $statusFilter,
             ],

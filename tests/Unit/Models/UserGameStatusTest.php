@@ -62,7 +62,7 @@ test('a user can have only one status per game', function () {
     ]);
 
     // Try to create another status for the same user and game
-    expect(fn() => UserGameStatus::factory()->create([
+    expect(fn () => UserGameStatus::factory()->create([
         'user_id' => $user->id,
         'game_id' => $game->id,
         'status' => GameStatus::COMPLETED,
