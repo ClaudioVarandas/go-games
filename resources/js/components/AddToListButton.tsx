@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ListPlus, Plus, Check, ArrowLeft } from 'lucide-react';
+import { ListPlus, Plus, ArrowLeft } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -31,9 +30,9 @@ interface AddToListButtonProps {
   className?: string;
 }
 
-export function AddToListButton({ 
-  gameId, 
-  gameLists, 
+export function AddToListButton({
+  gameId,
+  gameLists,
   variant = 'default',
   size = 'default',
   className = ''
@@ -51,7 +50,7 @@ export function AddToListButton({
 
   const handleCreateList = () => {
     setIsCreatingList(true);
-    
+
     router.post('/game-lists', {
       name: newListName,
       description: newListDescription,
@@ -61,31 +60,29 @@ export function AddToListButton({
       onSuccess: (response: any) => {
         // Get the new list ID from the response
         const newListId = response?.props?.gameList?.id;
-        
+
         if (newListId) {
           // Add the game to the newly created list
           addGameToList(newListId);
-          
+
           // Close the dialog and reset form
           setIsDialogOpen(false);
           setNewListName('');
           setNewListDescription('');
           setNotes('');
           setViewMode('select');
-          
+
           // Show a success message (you could use a toast notification library here)
           console.log('Game added to new list successfully');
         } else {
           console.error('Failed to get new list ID from response', response);
           alert('Failed to get new list ID from response');
         }
-        
+
         setIsCreatingList(false);
       },
       onError: (errors: any) => {
         console.error('Error creating list:', errors);
-        // Show an error message to the user
-        alert(`Error: ${Object.values(errors).flat().join(', ')}`);
         setIsCreatingList(false);
       }
     });
@@ -155,8 +152,8 @@ export function AddToListButton({
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto py-2">
             {gameLists.map((list) => (
-              <Card 
-                key={list.id} 
+              <Card
+                key={list.id}
                 className={`cursor-pointer transition-all ${selectedListId === list.id ? 'border-blue-500 ring-2 ring-blue-500' : 'hover:border-gray-400'}`}
                 onClick={() => setSelectedListId(list.id)}
               >
@@ -169,17 +166,17 @@ export function AddToListButton({
               </Card>
             ))}
           </div>
-          
+
           <div className="flex justify-between items-center mt-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setViewMode('create')}
             >
               <Plus className="h-4 w-4 mr-2" />
               Create New List
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={handleAddToSelectedList}
               disabled={!selectedListId || isAddingToList}
             >
@@ -203,16 +200,16 @@ export function AddToListButton({
       return (
         <>
           {gameLists.length > 0 && (
-            <Button 
-              variant="ghost" 
-              className="mb-4" 
+            <Button
+              variant="ghost"
+              className="mb-4"
               onClick={() => setViewMode('select')}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Lists
             </Button>
           )}
-          
+
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">List Name</Label>
@@ -223,7 +220,7 @@ export function AddToListButton({
                 placeholder="My Favorite Games"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="description">Description (Optional)</Label>
               <Textarea
@@ -233,7 +230,7 @@ export function AddToListButton({
                 placeholder="A collection of my favorite games..."
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="notes">Notes about this game (Optional)</Label>
               <Textarea
@@ -257,7 +254,7 @@ export function AddToListButton({
                 <option value="wishlist">Wishlist</option>
               </select>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -269,9 +266,9 @@ export function AddToListButton({
               <Label htmlFor="is_public">Make this list public</Label>
             </div>
           </div>
-          
+
           <div className="flex justify-end mt-4">
-            <Button 
+            <Button
               onClick={handleCreateList}
               disabled={!newListName || isCreatingList}
             >
@@ -311,9 +308,9 @@ export function AddToListButton({
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <Button 
-          variant={variant} 
-          size={size} 
+        <Button
+          variant={variant}
+          size={size}
           className={className}
         >
           <ListPlus className="h-4 w-4 mr-2" />
@@ -327,7 +324,7 @@ export function AddToListButton({
             {dialogHeader.description}
           </DialogDescription>
         </DialogHeader>
-        
+
         {gameLists.length > 0 && (
           <div className="mb-4">
             <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'select' | 'create')}>
@@ -340,7 +337,7 @@ export function AddToListButton({
             </ToggleGroup>
           </div>
         )}
-        
+
         {renderDialogContent()}
       </DialogContent>
     </Dialog>

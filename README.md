@@ -8,6 +8,7 @@ This project is a web application for managing game lists and tracking game stat
 - Organize games into custom lists
 - **Backlog**: a dedicated list for games you plan to play
 - **Wishlist**: a dedicated list for games you want to buy
+- Quickly add/remove games to/from **Backlog** and **Wishlist** with one-click icons on each game card
 - Admin panel for managing users, games, and lists
 
 ## Game Lists
