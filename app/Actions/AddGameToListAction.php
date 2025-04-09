@@ -10,11 +10,6 @@ class AddGameToListAction
 {
     /**
      * Add a game to a list.
-     *
-     * @param \App\Models\GameList $gameList
-     * @param \App\Models\Game $game
-     * @param array $data
-     * @return \App\Models\GameListItem
      */
     public function handle(GameList $gameList, Game $game, array $data = []): GameListItem
     {
@@ -29,12 +24,12 @@ class AddGameToListAction
                 $existingItem->notes = $data['notes'];
                 $existingItem->save();
             }
-            
+
             return $existingItem;
         }
 
         // Create a new game list item
-        $item = new GameListItem();
+        $item = new GameListItem;
         $item->game_list_id = $gameList->id;
         $item->game_id = $game->id;
         $item->notes = $data['notes'] ?? null;

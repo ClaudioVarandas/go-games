@@ -49,7 +49,7 @@ class Game extends Model
             ->withPivot('notes')
             ->withTimestamps();
     }
-    
+
     /**
      * Get the user game statuses for this game.
      */
@@ -57,11 +57,10 @@ class Game extends Model
     {
         return $this->hasMany(UserGameStatus::class);
     }
-    
+
     /**
      * Get the status for a specific user.
      *
-     * @param int $userId
      * @return \App\Models\UserGameStatus|null
      */
     public function statusForUser(int $userId)

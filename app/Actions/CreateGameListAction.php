@@ -9,14 +9,10 @@ class CreateGameListAction
 {
     /**
      * Create a new game list.
-     *
-     * @param \App\Models\User $user
-     * @param array $data
-     * @return \App\Models\GameList
      */
     public function handle(User $user, array $data): GameList
     {
-        $gameList = new GameList();
+        $gameList = new GameList;
         $gameList->user_id = $user->id;
         $gameList->name = $data['name'];
         $gameList->description = $data['description'] ?? null;

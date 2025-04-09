@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('game_id')->constrained()->cascadeOnDelete();
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             // Prevent duplicate games in the same list
             $table->unique(['game_list_id', 'game_id']);
         });

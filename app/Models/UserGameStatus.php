@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserGameStatus extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,7 +22,7 @@ class UserGameStatus extends Model
         'status',
         'notes',
     ];
-    
+
     /**
      * The attributes that should be cast.
      *
@@ -31,7 +31,7 @@ class UserGameStatus extends Model
     protected $casts = [
         'status' => GameStatus::class,
     ];
-    
+
     /**
      * Get the user that owns the status.
      */
@@ -39,7 +39,7 @@ class UserGameStatus extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     /**
      * Get the game that the status belongs to.
      */

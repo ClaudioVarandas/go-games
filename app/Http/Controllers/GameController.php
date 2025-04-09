@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Models\GameList;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -41,10 +40,10 @@ class GameController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        
+
         // Get user's game lists if authenticated
         $gameLists = $this->getUserGameLists();
-        
+
         if (empty($query)) {
             return Inertia::render('Games/Search', [
                 'games' => [],
@@ -65,16 +64,16 @@ class GameController extends Controller
             foreach ($games as $game) {
                 try {
                     $formattedGame = $this->formatGame($game);
-                    
+
                     // Save the game to the database to ensure it has a local ID
                     $dbGame = Game::updateOrCreate(
                         ['igdb_id' => $formattedGame['igdb_id']],
                         $formattedGame
                     );
-                    
+
                     // Add the database ID to the formatted game
                     $formattedGame['id'] = $dbGame->id;
-                    
+
                     // Add user's status for this game if authenticated
                     if (auth()->check()) {
                         try {
@@ -85,7 +84,7 @@ class GameController extends Controller
                             $formattedGame['userStatus'] = null;
                         }
                     }
-                    
+
                     $formattedGames->push($formattedGame);
                 } catch (\Exception $gameEx) {
                     // Skip this game if there's an issue
@@ -100,9 +99,9 @@ class GameController extends Controller
             ]);
         } catch (\Exception $e) {
             // Log the exception for debugging
-            \Log::error('Search error: ' . $e->getMessage());
+            \Log::error('Search error: '.$e->getMessage());
             \Log::error($e->getTraceAsString());
-            
+
             return Inertia::render('Games/Search', [
                 'games' => [],
                 'query' => $query,
@@ -121,14 +120,14 @@ class GameController extends Controller
             // First try to find the game in our database
             $game = Game::where('slug', $slug)->first();
 
-            if (!$game) {
+            if (! $game) {
                 // If not found in our database, try to fetch from IGDB
                 try {
                     $igdbGame = IGDBGame::where('slug', $slug)
                         ->with(['cover', 'genres', 'platforms', 'screenshots', 'similar_games'])
                         ->first();
 
-                    if (!$igdbGame) {
+                    if (! $igdbGame) {
                         return response()->json(['error' => 'Game not found'], 404);
                     }
 
@@ -141,7 +140,7 @@ class GameController extends Controller
                         $gameData
                     );
                 } catch (\Exception $e) {
-                    \Log::error('Game fetch error: ' . $e->getMessage());
+                    \Log::error('Game fetch error: '.$e->getMessage());
                     abort(500, 'An error occurred while fetching game data.');
                 }
             }
@@ -165,7 +164,7 @@ class GameController extends Controller
                 'gameLists' => $gameLists,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Game show error: ' . $e->getMessage());
+            \Log::error('Game show error: '.$e->getMessage());
             abort(500, 'An error occurred while loading the game.');
         }
     }
@@ -177,9 +176,9 @@ class GameController extends Controller
     {
         try {
             $games = IGDBGame::whereBetween('first_release_date', [
-                    $startDate->timestamp,
-                    $endDate->timestamp
-                ])
+                $startDate->timestamp,
+                $endDate->timestamp,
+            ])
                 ->with(['cover', 'genres', 'platforms'])
                 ->where('category', 0) // Main game
                 ->orderBy('first_release_date', 'asc')
@@ -191,16 +190,16 @@ class GameController extends Controller
             foreach ($games as $game) {
                 try {
                     $formattedGame = $this->formatGame($game);
-                    
+
                     // Save the game to the database to ensure it has a local ID
                     $dbGame = Game::updateOrCreate(
                         ['igdb_id' => $formattedGame['igdb_id']],
                         $formattedGame
                     );
-                    
+
                     // Add the database ID to the formatted game
                     $formattedGame['id'] = $dbGame->id;
-                    
+
                     // Add user's status for this game if authenticated
                     if (auth()->check()) {
                         try {
@@ -211,7 +210,7 @@ class GameController extends Controller
                             $formattedGame['userStatus'] = null;
                         }
                     }
-                    
+
                     $formattedGames->push($formattedGame);
                 } catch (\Exception $gameEx) {
                     // Skip this game if there's an issue
@@ -221,7 +220,8 @@ class GameController extends Controller
 
             return $formattedGames;
         } catch (\Exception $e) {
-            \Log::error('Upcoming games error: ' . $e->getMessage());
+            \Log::error('Upcoming games error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -233,26 +233,26 @@ class GameController extends Controller
     {
         return $games->map(function ($game) {
             $formattedGame = $this->formatGame($game);
-            
+
             // Save the game to the database to ensure it has a local ID
             $dbGame = Game::updateOrCreate(
                 ['igdb_id' => $formattedGame['igdb_id']],
                 $formattedGame
             );
-            
+
             // Add the database ID to the formatted game
             $formattedGame['id'] = $dbGame->id;
-            
+
             // Add user's status for this game if authenticated
             if (auth()->check()) {
                 $userStatus = $dbGame->statusForUser(auth()->id());
                 $formattedGame['userStatus'] = $userStatus && $userStatus->status ? $userStatus->status->value : null;
             }
-            
+
             return $formattedGame;
         });
     }
-    
+
     /**
      * Format a collection of IGDB games without saving.
      */
@@ -270,7 +270,7 @@ class GameController extends Controller
     {
         $coverUrl = null;
         if (isset($game->cover)) {
-            $coverUrl = 'https:' . str_replace('t_thumb', 't_cover_big', $game->cover->url);
+            $coverUrl = 'https:'.str_replace('t_thumb', 't_cover_big', $game->cover->url);
         }
 
         $genres = [];
@@ -303,7 +303,7 @@ class GameController extends Controller
         // If this is a model from our database, include the ID
         if ($game instanceof Game) {
             $data['id'] = $game->id;
-            
+
             // Add user's status for this game if authenticated
             if (auth()->check()) {
                 $userStatus = $game->statusForUser(auth()->id());

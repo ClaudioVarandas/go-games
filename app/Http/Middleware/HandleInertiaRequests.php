@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -44,11 +43,14 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? [
+                    ...$request->user()->toArray(),
+                    'role' => $request->user()->role->value, // Share the role value
+                ] : null,
             ],
-            'ziggy' => fn (): array => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
             ],
             'sidebarOpen' => $request->cookie('sidebar_state') === 'true',
         ];

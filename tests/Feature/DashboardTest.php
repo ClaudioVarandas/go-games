@@ -10,15 +10,19 @@ class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_guests_are_redirected_to_the_login_page()
+    public function test_dashboard_redirects_guests_to_home()
     {
-        $this->get('/dashboard')->assertRedirect('/login');
+        // Since '/dashboard' redirects to '/', guests should end up at '/'
+        // which might then trigger the auth middleware redirect to '/login'
+        // but the initial redirect from '/dashboard' itself goes to '/'
+        $this->get('/dashboard')->assertRedirect('/');
     }
 
-    public function test_authenticated_users_can_visit_the_dashboard()
+    public function test_dashboard_redirects_authenticated_users_to_home()
     {
         $this->actingAs($user = User::factory()->create());
 
-        $this->get('/dashboard')->assertOk();
+        // Since '/dashboard' redirects to '/', authenticated users should also end up at '/'
+        $this->get('/dashboard')->assertRedirect('/');
     }
 }

@@ -7,16 +7,16 @@ use Inertia\Testing\AssertableInertia as Assert;
 
 test('unauthenticated users cannot access game lists', function () {
     $response = $this->get('/game-lists');
-    
+
     $response->assertRedirect('/login');
 });
 
 test('authenticated users can view their game lists', function () {
     $user = User::factory()->create();
     $gameList = GameList::factory()->create(['user_id' => $user->id]);
-    
+
     $response = $this->actingAs($user)->get('/game-lists');
-    
+
     $response->assertStatus(200);
     $response->assertInertia(fn (Assert $page) => $page
         ->component('GameLists/Index')
@@ -32,9 +32,9 @@ test('authenticated users can create a game list', function () {
         'description' => 'A collection of my favorite games',
         'is_public' => true,
     ];
-    
+
     $response = $this->actingAs($user)->post('/game-lists', $listData);
-    
+
     $response->assertRedirect();
     $this->assertDatabaseHas('game_lists', [
         'user_id' => $user->id,
@@ -49,9 +49,9 @@ test('authenticated users can view a specific game list', function () {
     $gameList = GameList::factory()->create(['user_id' => $user->id]);
     $game = Game::factory()->create();
     $gameList->games()->attach($game->id);
-    
+
     $response = $this->actingAs($user)->get("/game-lists/{$gameList->id}");
-    
+
     $response->assertStatus(200);
     $response->assertInertia(fn (Assert $page) => $page
         ->component('GameLists/Show')
@@ -68,9 +68,9 @@ test('authenticated users can update their game list', function () {
         'description' => 'Updated description',
         'is_public' => false,
     ];
-    
+
     $response = $this->actingAs($user)->put("/game-lists/{$gameList->id}", $updatedData);
-    
+
     $response->assertRedirect();
     $this->assertDatabaseHas('game_lists', [
         'id' => $gameList->id,
@@ -83,9 +83,9 @@ test('authenticated users can update their game list', function () {
 test('authenticated users can delete their game list', function () {
     $user = User::factory()->create();
     $gameList = GameList::factory()->create(['user_id' => $user->id]);
-    
+
     $response = $this->actingAs($user)->delete("/game-lists/{$gameList->id}");
-    
+
     $response->assertRedirect();
     $this->assertDatabaseMissing('game_lists', ['id' => $gameList->id]);
 });
@@ -94,9 +94,9 @@ test('users cannot access game lists of other users', function () {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
     $gameList = GameList::factory()->create(['user_id' => $user1->id, 'is_public' => false]);
-    
+
     $response = $this->actingAs($user2)->get("/game-lists/{$gameList->id}");
-    
+
     $response->assertStatus(403);
 });
 
@@ -104,9 +104,9 @@ test('users can view public game lists of other users', function () {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
     $gameList = GameList::factory()->create(['user_id' => $user1->id, 'is_public' => true]);
-    
+
     $response = $this->actingAs($user2)->get("/game-lists/{$gameList->id}");
-    
+
     $response->assertStatus(200);
 });
 
@@ -114,11 +114,11 @@ test('users cannot update game lists of other users', function () {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
     $gameList = GameList::factory()->create(['user_id' => $user1->id]);
-    
+
     $response = $this->actingAs($user2)->put("/game-lists/{$gameList->id}", [
         'name' => 'Hacked List',
     ]);
-    
+
     $response->assertStatus(403);
 });
 
@@ -126,9 +126,9 @@ test('users cannot delete game lists of other users', function () {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
     $gameList = GameList::factory()->create(['user_id' => $user1->id]);
-    
+
     $response = $this->actingAs($user2)->delete("/game-lists/{$gameList->id}");
-    
+
     $response->assertStatus(403);
     $this->assertDatabaseHas('game_lists', ['id' => $gameList->id]);
 });

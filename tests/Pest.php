@@ -11,8 +11,10 @@
 |
 */
 
+// Revert to standard setup: Apply TestCase specifically to Feature and Unit directories
 pest()->uses(Tests\TestCase::class)->in('Feature');
 pest()->uses(Tests\TestCase::class)->in('Unit');
+// Keep specific trait for Unit/Models if needed (TestCase already includes RefreshDatabase)
 pest()->uses(Illuminate\Foundation\Testing\RefreshDatabase::class)->in('Unit/Models');
 
 /*

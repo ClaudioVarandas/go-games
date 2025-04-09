@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 test('game has correct fillable attributes', function () {
-    $game = new Game();
-    
+    $game = new Game;
+
     expect($game->getFillable())->toEqual([
         'igdb_id',
         'name',
@@ -22,8 +22,8 @@ test('game has correct fillable attributes', function () {
 });
 
 test('game has correct casts', function () {
-    $game = new Game();
-    
+    $game = new Game;
+
     expect($game->getCasts())->toEqual([
         'id' => 'int',
         'release_date' => 'date',
@@ -35,7 +35,7 @@ test('game has correct casts', function () {
 
 test('can create game using factory', function () {
     $game = Game::factory()->create();
-    
+
     expect($game)->toBeInstanceOf(Game::class)
         ->and($game->exists)->toBeTrue()
         ->and($game->igdb_id)->toBeInt()
@@ -57,9 +57,9 @@ test('can create game with specific attributes', function () {
         'genres' => ['Action', 'Adventure'],
         'platforms' => ['PC', 'PlayStation 5'],
     ];
-    
+
     $game = Game::create($attributes);
-    
+
     expect($game->refresh())
         ->igdb_id->toBe(12345)
         ->name->toBe('Test Game')
@@ -76,7 +76,7 @@ test('release_date is cast to date', function () {
     $game = Game::factory()->create([
         'release_date' => '2025-01-01',
     ]);
-    
+
     expect($game->release_date)->toBeInstanceOf(\Carbon\Carbon::class);
 });
 
@@ -85,7 +85,7 @@ test('genres and platforms are cast to arrays', function () {
         'genres' => ['Action', 'Adventure'],
         'platforms' => ['PC', 'PlayStation 5'],
     ]);
-    
+
     expect($game->genres)->toBeArray()
         ->and($game->genres)->toBe(['Action', 'Adventure'])
         ->and($game->platforms)->toBeArray()

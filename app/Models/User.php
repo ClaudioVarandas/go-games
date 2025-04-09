@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -45,6 +46,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
         ];
     }
 
@@ -55,12 +57,33 @@ class User extends Authenticatable
     {
         return $this->hasMany(GameList::class);
     }
-    
+
     /**
      * Get the game statuses for the user.
      */
     public function gameStatuses(): HasMany
     {
         return $this->hasMany(UserGameStatus::class);
+    }
+
+    /**
+     * Check if the user has the Admin role.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role instanceof UserRole && $this->role === UserRole::Admin;
+    }
+
+    /**
+     * Check if the user has the Gamer role.
+     */
+    public function isGamer(): bool
+    {
+        return $this->role === UserRole::Gamer;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
     }
 }

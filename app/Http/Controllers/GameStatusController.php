@@ -18,7 +18,7 @@ class GameStatusController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Get all games with statuses for the authenticated user.
      */
@@ -26,28 +26,29 @@ class GameStatusController extends Controller
     {
         $user = auth()->user();
         $statusFilter = $request->query('status');
-        
+
         $query = UserGameStatus::where('user_id', $user->id);
-        
+
         // Apply status filter if provided
         if ($statusFilter) {
             $query->where('status', $statusFilter);
         }
-        
+
         $userGameStatuses = $query->with('game')->get();
-        
+
         $games = $userGameStatuses->map(function ($status) {
             $game = $status->game;
             $game->userStatus = $status->status->value;
+
             return $game;
         });
-        
+
         // Get user's game lists for the AddToList functionality
         $gameLists = $user->gameLists()
             ->select('id', 'name')
             ->orderBy('name')
             ->get();
-        
+
         return Inertia::render('MyGames/Index', [
             'games' => $games,
             'gameLists' => $gameLists,
@@ -68,7 +69,7 @@ class GameStatusController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Game status updated successfully.',
-                'status' => $status
+                'status' => $status,
             ]);
         }
 
@@ -78,9 +79,16 @@ class GameStatusController extends Controller
     /**
      * Remove the game status.
      */
-    public function destroy(Game $game, UpdateGameStatusAction $action)
+    public function destroy(Request $request, Game $game, UpdateGameStatusAction $action)
     {
         $action->handle(auth()->user(), $game, ['status' => null]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Game status removed successfully.',
+            ]);
+        }
 
         return back()->with('success', 'Game status removed successfully.');
     }

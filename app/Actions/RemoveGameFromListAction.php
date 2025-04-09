@@ -10,10 +10,6 @@ class RemoveGameFromListAction
 {
     /**
      * Remove a game from a list.
-     *
-     * @param \App\Models\GameList $gameList
-     * @param \App\Models\Game $game
-     * @return bool
      */
     public function handle(GameList $gameList, Game $game): bool
     {

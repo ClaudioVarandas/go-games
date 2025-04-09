@@ -57,7 +57,7 @@ class GameListController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Game list created successfully.',
-                'gameList' => $gameList
+                'gameList' => $gameList,
             ]);
         }
 
@@ -73,7 +73,7 @@ class GameListController extends Controller
     public function show(GameList $gameList)
     {
         // Check if the user can view this list
-        if (!$gameList->is_public && auth()->id() !== $gameList->user_id) {
+        if (! $gameList->is_public && auth()->id() !== $gameList->user_id) {
             abort(403, 'You do not have permission to view this list.');
         }
 

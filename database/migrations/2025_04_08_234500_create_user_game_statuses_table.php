@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('status');
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             // Ensure a user can only have one status per game
             $table->unique(['user_id', 'game_id']);
         });

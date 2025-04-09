@@ -12,6 +12,7 @@ class UpdateGameListRequest extends FormRequest
     public function authorize(): bool
     {
         $gameList = $this->route('game_list');
+
         return $gameList && $this->user()->id === $gameList->user_id;
     }
 

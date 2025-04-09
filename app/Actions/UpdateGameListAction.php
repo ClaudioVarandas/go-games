@@ -8,10 +8,6 @@ class UpdateGameListAction
 {
     /**
      * Update an existing game list.
-     *
-     * @param \App\Models\GameList $gameList
-     * @param array $data
-     * @return \App\Models\GameList
      */
     public function handle(GameList $gameList, array $data): GameList
     {

@@ -33,7 +33,7 @@ class GameListItemController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Game added to list successfully.',
-                'gameListItem' => $item
+                'gameListItem' => $item,
             ]);
         }
 

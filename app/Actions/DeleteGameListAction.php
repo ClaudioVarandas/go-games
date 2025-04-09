@@ -8,9 +8,6 @@ class DeleteGameListAction
 {
     /**
      * Delete a game list.
-     *
-     * @param \App\Models\GameList $gameList
-     * @return bool
      */
     public function handle(GameList $gameList): bool
     {

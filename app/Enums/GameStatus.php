@@ -9,13 +9,13 @@ enum GameStatus: string
     case COMPLETED = 'completed';
     case ON_HOLD = 'on_hold';
     case ABANDONED = 'abandoned';
-    
+
     /**
      * Get the display name for the status.
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PLAYING => 'Playing',
             self::BEATEN => 'Beaten',
             self::COMPLETED => 'Completed',
@@ -23,7 +23,7 @@ enum GameStatus: string
             self::ABANDONED => 'Abandoned',
         };
     }
-    
+
     /**
      * Get all statuses as an array for forms, etc.
      */

@@ -12,6 +12,7 @@ class AddGameToListRequest extends FormRequest
     public function authorize(): bool
     {
         $gameList = $this->route('gameList');
+
         return $gameList && $this->user()->id === $gameList->user_id;
     }
 

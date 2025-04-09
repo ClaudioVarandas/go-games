@@ -19,7 +19,7 @@ class GameListFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => $this->faker->words(3, true) . ' Games',
+            'name' => $this->faker->words(3, true).' Games',
             'description' => $this->faker->optional(0.7)->paragraph(),
             'is_public' => $this->faker->boolean(80), // 80% chance of being public
         ];
