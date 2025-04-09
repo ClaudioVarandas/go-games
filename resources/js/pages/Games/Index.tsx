@@ -2,8 +2,8 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { AppShell } from '@/components/app-shell';
 import { AppHeader } from '@/components/app-header';
+import { AppNavigation } from '@/components/app-navigation';
 import Heading from '@/components/heading';
-import { SearchBar } from '@/components/SearchBar';
 import { GameCard } from '@/components/GameCard';
 import { Button } from '@/components/ui/button';
 import { Calendar, ChevronRight } from 'lucide-react';
@@ -36,13 +36,13 @@ interface IndexProps {
 export default function Index({ nextWeekGames, thisMonthGames, gameLists = [] }: IndexProps) {
   const breadcrumbs = [
     { title: 'Home', href: '/' },
-    { title: 'Game Releases', href: '/' },
   ];
 
   return (
     <AppShell>
       <Head title="Game Releases" />
-      <AppHeader breadcrumbs={breadcrumbs} />
+      <AppHeader breadcrumbs={[]} />
+      <AppNavigation />
       
       <div className="container md:max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">

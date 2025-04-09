@@ -12,9 +12,11 @@ Route::get('/', [GameController::class, 'index'])->name('home');
 Route::get('/search', [GameController::class, 'search'])->name('games.search');
 Route::get('/games/{slug}', [GameController::class, 'show'])->name('games.show');
 
+// Redirect dashboard to home
+Route::redirect('dashboard', '/');
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    // My Games page (replaces dashboard)
-    Route::get('dashboard', [GameStatusController::class, 'index'])->name('dashboard');
+    // My Games page
     Route::get('my-games', [GameStatusController::class, 'index'])->name('my-games');
 
     // Game Lists

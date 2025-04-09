@@ -19,7 +19,7 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Game Lists',
+        title: 'My Lists',
         href: '/game-lists',
         icon: ListChecks,
     },
@@ -42,21 +42,15 @@ export function AppSidebar() {
     const { auth } = usePage().props as any;
     const isAuthenticated = auth && auth.user;
     
-    // Filter nav items based on authentication status
-    const filteredNavItems = mainNavItems.filter(item => {
-        // Only show My Games and Game Lists for authenticated users
-        if ((item.title === 'Game Lists' || item.title === 'My Games') && !isAuthenticated) {
-            return false;
-        }
-        return true;
-    });
+    // Show all navigation items regardless of authentication status
+    const filteredNavItems = mainNavItems;
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible="none" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/my-games" prefetch>
+                            <Link href="/" prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

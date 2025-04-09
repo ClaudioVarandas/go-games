@@ -2,8 +2,8 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { AppShell } from '@/components/app-shell';
 import { AppHeader } from '@/components/app-header';
+import { AppNavigation } from '@/components/app-navigation';
 import Heading from '@/components/heading';
-import { SearchBar } from '@/components/SearchBar';
 import { GameCard } from '@/components/GameCard';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,8 @@ export default function Search({ games, query, error, gameLists = [] }: SearchPr
   return (
     <AppShell>
       <Head title={query ? `Search: ${query}` : 'Search Games'} />
-      <AppHeader breadcrumbs={breadcrumbs} />
+      <AppHeader breadcrumbs={[]} />
+      <AppNavigation />
       
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-8">

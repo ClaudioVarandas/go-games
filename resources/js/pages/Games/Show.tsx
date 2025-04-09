@@ -2,7 +2,7 @@ import React from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { AppShell } from '@/components/app-shell';
 import { AppHeader } from '@/components/app-header';
-import Heading from '@/components/heading';
+import { AppNavigation } from '@/components/app-navigation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -46,7 +46,8 @@ export default function Show({ game, gameLists = [] }: ShowProps) {
   return (
     <AppShell>
       <Head title={game.name} />
-      <AppHeader breadcrumbs={breadcrumbs} />
+      <AppHeader breadcrumbs={[]} />
+      <AppNavigation />
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">

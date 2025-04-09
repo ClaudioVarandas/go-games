@@ -2,10 +2,10 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { AppShell } from '@/components/app-shell';
 import { AppHeader } from '@/components/app-header';
+import { AppNavigation } from '@/components/app-navigation';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { ListPlus, Gamepad2, Plus, ListChecks } from 'lucide-react';
 
@@ -26,19 +26,20 @@ interface IndexProps {
 export default function Index({ gameLists }: IndexProps) {
   const breadcrumbs = [
     { title: 'Home', href: '/' },
-    { title: 'My Game Lists', href: '/game-lists' },
+    { title: 'My Lists', href: '/game-lists' },
   ];
 
   return (
     <AppShell>
-      <Head title="My Game Lists" />
-      <AppHeader breadcrumbs={breadcrumbs} />
+      <Head title="My Lists" />
+      <AppHeader breadcrumbs={[]} />
+      <AppNavigation />
       
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
             <ListChecks className="h-6 w-6 mr-2 text-blue-600" />
-            <Heading>My Game Lists</Heading>
+            <Heading>My Lists</Heading>
           </div>
           <Link href="/game-lists/create">
             <Button className="flex items-center">

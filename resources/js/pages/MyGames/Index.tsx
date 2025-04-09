@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Head, router, usePage } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import React, { useState } from 'react';
+import { Head, router } from '@inertiajs/react';
+import { AppShell } from '@/components/app-shell';
+import { AppHeader } from '@/components/app-header';
+import { AppNavigation } from '@/components/app-navigation';
 import { GameCard } from '@/components/GameCard';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { 
@@ -16,7 +17,11 @@ import { Filter } from 'lucide-react';
 // Define tab types
 type TabType = 'games' | 'backlog' | 'wishlist';
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = [
+    {
+        title: 'Home',
+        href: '/',
+    },
     {
         title: 'My Games',
         href: '/my-games',
@@ -75,8 +80,10 @@ export default function MyGames({ games, gameLists, filters = {} }: MyGamesProps
     };
     
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppShell>
             <Head title="My Games" />
+            <AppHeader breadcrumbs={[]} />
+            <AppNavigation />
             
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col space-y-6">
@@ -156,6 +163,6 @@ export default function MyGames({ games, gameLists, filters = {} }: MyGamesProps
                     )}
                 </div>
             </div>
-        </AppLayout>
+        </AppShell>
     );
 }
