@@ -19,9 +19,11 @@ interface GameCardProps {
   };
   gameLists?: { id: number; name: string }[];
   showActions?: boolean;
+  isInBacklog?: boolean;
+  isInWishlist?: boolean;
 }
 
-export function GameCard({ game, gameLists = [], showActions = true }: GameCardProps) {
+export function GameCard({ game, gameLists = [], showActions = true, isInBacklog = false, isInWishlist = false }: GameCardProps) {
   const { auth } = usePage().props as any;
   const isAuthenticated = auth && auth.user;
   return (
@@ -29,9 +31,9 @@ export function GameCard({ game, gameLists = [], showActions = true }: GameCardP
       <Link href={`/games/${game.slug}`} className="block">
         <CardHeader className="p-0 relative">
           {game.cover_url ? (
-            <img 
-              src={game.cover_url} 
-              alt={game.name} 
+            <img
+              src={game.cover_url}
+              alt={game.name}
               className="w-full h-48 object-cover"
             />
           ) : (
@@ -72,6 +74,21 @@ export function GameCard({ game, gameLists = [], showActions = true }: GameCardP
             </Badge>
           ))}
         </div>
+
+        {(isInBacklog || isInWishlist) && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {isInBacklog && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-200 text-yellow-800 border border-yellow-400">
+                Backlog
+              </span>
+            )}
+            {isInWishlist && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-pink-200 text-pink-800 border border-pink-400">
+                Wishlist
+              </span>
+            )}
+          </div>
+        )}
       </CardContent>
       <CardFooter className="p-4 pt-0 border-t border-gray-100 dark:border-gray-800">
         <div className="flex flex-col gap-3 w-full">
@@ -87,7 +104,7 @@ export function GameCard({ game, gameLists = [], showActions = true }: GameCardP
               </Badge>
             )}
           </div>
-          
+
           {isAuthenticated && showActions && (
             <GameActionsBar
               gameId={game.id}

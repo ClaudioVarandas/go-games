@@ -36,50 +36,55 @@ class GameStatusController extends Controller
 
         $userGameStatuses = $query->with('game')->get();
 
-        $games = $userGameStatuses->map(function ($status) {
-            $game = $status->game;
-            $game->userStatus = $status->status->value;
+        // Fetch or create the user's backlog list
+        $backlogList = $user->gameLists()->firstOrCreate(
+            ['type' => 'backlog'],
+            ['name' => 'Backlog', 'is_public' => false]
+        );
 
-            return $game;
+        $backlogGames = $backlogList->games()->get();
+        $backlogGameIds = $backlogGames->pluck('id')->toArray();
+
+        // Fetch or create the user's wishlist list
+        $wishlistList = $user->gameLists()->firstOrCreate(
+            ['type' => 'wishlist'],
+            ['name' => 'Wishlist', 'is_public' => false]
+        );
+
+        $wishlistGames = $wishlistList->games()->get();
+        $wishlistGameIds = $wishlistGames->pluck('id')->toArray();
+
+        $games = $userGameStatuses->map(function ($status) use ($backlogGameIds, $wishlistGameIds, $backlogList, $wishlistList) {
+            $game = $status->game;
+            return [
+                'id' => $game->id,
+                'name' => $game->name,
+                'slug' => $game->slug,
+                'cover_url' => $game->cover_url,
+                'release_date' => $game->release_date,
+                'rating' => $game->rating,
+                'genres' => $game->genres ?? [],
+                'platforms' => $game->platforms ?? [],
+                'userStatus' => $status->status->value,
+                'isInBacklog' => in_array($game->id, $backlogGameIds),
+                'isInWishlist' => in_array($game->id, $wishlistGameIds),
+                'backlogListId' => $backlogList->id,
+                'wishlistListId' => $wishlistList->id,
+            ];
         });
 
         // Get user's game lists for the AddToList functionality
         $gameLists = $user->gameLists()
-            ->select('id', 'name', 'type')
             ->orderBy('name')
-            ->get();
-
-        // Fetch or create the user's backlog list
-        $backlogList = $user->gameLists()
-            ->where('type', 'backlog')
-            ->first();
-
-        if (! $backlogList) {
-            $backlogList = $user->gameLists()->make();
-            $backlogList->name = 'Backlog';
-            $backlogList->type = 'backlog';
-            $backlogList->is_public = false;
-            $user->gameLists()->save($backlogList);
-        }
-
-        // Fetch games in backlog
-        $backlogGames = $backlogList->games()->get();
-
-        // Fetch or create the user's wishlist list
-        $wishlistList = $user->gameLists()
-            ->where('type', 'wishlist')
-            ->first();
-
-        if (! $wishlistList) {
-            $wishlistList = $user->gameLists()->make();
-            $wishlistList->name = 'Wishlist';
-            $wishlistList->type = 'wishlist';
-            $wishlistList->is_public = false;
-            $user->gameLists()->save($wishlistList);
-        }
-
-        // Fetch games in wishlist
-        $wishlistGames = $wishlistList->games()->get();
+            ->get()
+            ->map(function ($list) {
+                return [
+                    'id' => $list->id,
+                    'name' => $list->name,
+                    'type' => $list->type,
+                    'description' => $list->description,
+                ];
+            });
 
         return Inertia::render('MyGames/Index', [
             'games' => $games,

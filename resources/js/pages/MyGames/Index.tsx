@@ -38,6 +38,8 @@ interface Game {
     genres: string[];
     platforms: string[];
     userStatus?: string | null;
+    isInBacklog?: boolean;
+    isInWishlist?: boolean;
 }
 
 interface GameList {
@@ -139,7 +141,12 @@ export default function MyGames({ games, backlogGames, wishlistGames, gameLists,
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                     {games.map((game) => (
                                         <div key={game.id} className="transform transition-transform duration-300 hover:scale-105">
-                                            <GameCard game={game} gameLists={gameLists} />
+                                            <GameCard
+  game={game}
+  gameLists={gameLists}
+  isInBacklog={game.isInBacklog}
+  isInWishlist={game.isInWishlist}
+/>
                                         </div>
                                     ))}
                                 </div>
